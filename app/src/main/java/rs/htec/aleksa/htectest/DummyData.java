@@ -1,5 +1,9 @@
 package rs.htec.aleksa.htectest;
 
+import java.util.ArrayList;
+
+import rs.htec.aleksa.htectest.pojo.ListItem;
+
 /**
  * Created by aleksa on 8/13/16.
  *
@@ -9,7 +13,7 @@ package rs.htec.aleksa.htectest;
 
 public class DummyData {
 
-    public static final String DUMMY_DATA[] = new String[]{
+    public static final String DUMMY_DESCRIPTIONS[] = new String[]{
 
             "explanation cable control electricians thousand capitals classification conn preserver " +
                     "thirds quartermaster puffs countermeasure armful need discretion similarity " +
@@ -27,4 +31,19 @@ public class DummyData {
             "restraints sod detention alternation pits instance spindles screwdrivers smile worksheet " +
                     "amusements stub jams breezes bush engine wash official talker shaft states"
     };
+
+    public static final ArrayList<ListItem> DUMMY_ITEMS;
+
+    static {
+        DUMMY_ITEMS = new ArrayList<>();
+        for (int i = 0; i < DUMMY_DESCRIPTIONS.length; i++){
+
+            ListItem listItem = new ListItem();
+            listItem.setTitle("Item title " + (i + 1));
+            listItem.setDescription(DUMMY_DESCRIPTIONS[i]);
+
+            DUMMY_ITEMS.add(listItem);
+        }
+    }
+
 }

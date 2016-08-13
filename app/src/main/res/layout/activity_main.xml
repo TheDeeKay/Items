@@ -5,7 +5,7 @@
     android:id="@+id/activity_main_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="rs.htec.aleksa.htectest.MainActivity">
+    tools:context="rs.htec.aleksa.htectest.ui.activity.MainActivity">
 
     <ListView
         android:id="@+id/main_list_view"
