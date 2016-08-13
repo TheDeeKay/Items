@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import rs.htec.aleksa.htectest.api.API;
 import rs.htec.aleksa.htectest.pojo.ListItem;
-import rx.functions.Action1;
+import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 /**
@@ -26,9 +26,19 @@ public class RetrofitTest {
 
         API.getAllItems()
                 .observeOn(Schedulers.io())
-                .subscribe(new Action1<ArrayList<ListItem>>() {
-            @Override
-            public void call(ArrayList<ListItem> listItems) {
+                .subscribe(new Subscriber<ArrayList<ListItem>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        throw new AssertionError();
+                    }
+
+                    @Override
+            public void onNext(ArrayList<ListItem> listItems) {
                 assert listItems != null && !listItems.isEmpty();
             }
         });
