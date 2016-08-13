@@ -7,8 +7,8 @@ import android.widget.ListView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rs.htec.aleksa.htectest.DummyData;
-import rs.htec.aleksa.htectest.ui.adapter.ItemListAdapter;
 import rs.htec.aleksa.htectest.R;
+import rs.htec.aleksa.htectest.ui.adapter.ItemListAdapter;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,5 +1,7 @@
 package rs.htec.aleksa.htectest.pojo;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by aleksa on 8/13/16.
  *
@@ -8,8 +10,11 @@ package rs.htec.aleksa.htectest.pojo;
 
 public class ListItem {
 
+    @SerializedName("image")
     private String imageUrl;
+    @SerializedName("title")
     private String title;
+    @SerializedName("description")
     private String description;
 
     public String getImageUrl() {
