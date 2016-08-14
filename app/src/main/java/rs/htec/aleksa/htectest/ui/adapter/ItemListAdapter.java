@@ -8,6 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -65,7 +68,12 @@ public class ItemListAdapter extends BaseAdapter {
         // Properly set the contents of the view
         holder.title.setText(listItems.get(position).getTitle());
         holder.description.setText(listItems.get(position).getDescription());
-        // TODO: properly set the image when we start fetching from the internet
+        // Load image from URL, center crop it and cache it to the disk
+        Glide.with(parent.getContext())
+                .load(listItems.get(position).getImageUrl())
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .into(holder.image);
 
         return convertView;
     }

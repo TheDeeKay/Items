@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <rs.htec.aleksa.htectest.ui.widget.SquareImageView
         android:id="@+id/main_item_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
