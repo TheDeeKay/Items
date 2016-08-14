@@ -17,19 +17,12 @@
 
     <TextView
         android:id="@+id/main_item_title"
-        style="@style/ListItemTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Item title"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="18sp"/>
+        style="@style/TitleTextView"
+        android:text="Item title"/>
     
     <TextView
         android:id="@+id/main_item_description"
-        style="@style/ListItemTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/DescriptionTextView"
         android:maxLines="@integer/main_item_description_max_lines"
         android:ellipsize="end" />
 

@@ -8,10 +8,19 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!-- A style used to make margins on list item title and description -->
-    <style name="ListItemTextView">
+    <!-- A style used to make margins and measures on description textview -->
+    <style name="DescriptionTextView">
         <item name="android:layout_marginStart">@dimen/list_item_text_margin_start</item>
         <item name="android:layout_marginEnd">@dimen/list_item_text_margin_end</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!-- A style built upon description style, with added text attributes -->
+    <style name="TitleTextView" parent="DescriptionTextView">
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 </resources>
