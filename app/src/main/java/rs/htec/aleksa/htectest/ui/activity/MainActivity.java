@@ -2,6 +2,7 @@ package rs.htec.aleksa.htectest.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
@@ -24,6 +25,16 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.main_list_view)
     ListView mListView;
 
+    @BindView(R.id.main_swipe_layout)
+    SwipeRefreshLayout swipeContainer;
+
+    private ItemListAdapter mAdapter;
+
+    // Used to notify UI of database changes
+    private Realm mRealm;
+    private RealmChangeListener<RealmResults<ListItem>> mListItemChangeListener;
+    private RealmResults<ListItem> mListItems;
+
     /**
      * Launches the detail activity for the selected item
      * The launching intent contains title, description and image url for the given item
@@ -39,13 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(intent);
     }
-
-    private ItemListAdapter mAdapter;
-
-    // Used to notify UI of database changes
-    private Realm mRealm;
-    private RealmChangeListener<RealmResults<ListItem>> mListItemChangeListener;
-    private RealmResults<ListItem> mListItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,13 @@ public class MainActivity extends AppCompatActivity {
         // Listen for changes in ListItem Realm and notify the adapter of changes
         mListItemChangeListener = element -> mAdapter.notifyDataSetChanged();
         mListItems.addChangeListener(mListItemChangeListener);
+
+        // Attach a listener for the pulldown refresh (to just fetch data)
+        swipeContainer.setOnRefreshListener(
+                () -> FetchData.fetchData(
+                        getApplicationContext(),
+                        () -> swipeContainer.setRefreshing(false))
+        );
     }
 
     @Override

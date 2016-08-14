@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main_root"
+    android:id="@+id/main_swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="rs.htec.aleksa.htectest.ui.activity.MainActivity">
@@ -14,4 +14,4 @@
         android:divider="@null"
         android:paddingBottom="@dimen/list_vertical_margin"/>
 
-</FrameLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -15,6 +15,7 @@ import rs.htec.aleksa.htectest.pojo.ListItem;
 import rs.htec.aleksa.htectest.util.Utilities;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 /**
@@ -31,10 +32,18 @@ public class FetchData {
     private static Toast sToast = null;
 
     /**
-     * Fetches the network data on an IO thread and stores it into Realm on an IO thread
-     * @param context The context used to open a Realm instance. Best be an applicationContext
+     * A wrapper for the fetch with no onComplete call
      */
     public static void fetchData(Context context){
+        fetchData(context, null);
+    }
+
+    /**
+     * Fetches the network data on an IO thread and stores it into Realm on an IO thread
+     * @param context The context used to open a Realm instance. Best be an applicationContext
+     * @param onComplete The action to be performed when this fetch finishes
+     */
+    public static void fetchData(Context context, Action0 onComplete){
 
         API.getAllItems()
                 .subscribeOn(Schedulers.io())
@@ -42,7 +51,15 @@ public class FetchData {
                 .subscribe(
                         listItems -> storeData(listItems, context),
                         e -> handleError(e, context),
-                        () -> Log.d(TAG, "Successfuly finished fetching data"));
+                        () -> {
+                            Log.d(TAG, "Successfuly finished fetching data");
+                            // If there is onComplete, execute it on mainThread
+                            if (onComplete != null) {
+                                Observable.just(null)
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(o -> onComplete.call());
+                            }
+                        });
     }
 
     /**
