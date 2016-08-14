@@ -6,12 +6,14 @@ import android.util.Log;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import rs.htec.aleksa.htectest.R;
-import rs.htec.aleksa.htectest.api.API;
+import rs.htec.aleksa.htectest.network.API;
 import rs.htec.aleksa.htectest.pojo.ListItem;
 import rs.htec.aleksa.htectest.ui.adapter.ItemListAdapter;
 import rx.Subscriber;
@@ -27,11 +29,18 @@ public class MainActivity extends AppCompatActivity {
 
     private ItemListAdapter mAdapter;
 
+    // Used to notify UI of database changes
+    private Realm mRealm;
+    private RealmChangeListener<RealmResults<ListItem>> mListItemChangeListener;
+    private RealmResults<ListItem> mListItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        mRealm = Realm.getDefaultInstance();
 
         // TODO: All this should get extracted once the database is in
         API.getAllItems()
@@ -39,12 +48,8 @@ public class MainActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ArrayList<ListItem>>() {
 
-                    List<ListItem> items = new ArrayList<>();
-
                     @Override
                     public void onCompleted() {
-                        mAdapter = new ItemListAdapter(MainActivity.this, items);
-                        mListView.setAdapter(mAdapter);
                     }
 
                     @Override
@@ -55,8 +60,36 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(ArrayList<ListItem> listItems) {
-                        items.addAll(listItems);
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+
+                        realm.copyToRealmOrUpdate(listItems);
+
+                        realm.commitTransaction();
+                        realm.close();
                     }
                 });
+
+        // Get all the ListItems, create an adapter for them and set them to the listview
+        mListItems = mRealm.where(ListItem.class).findAll();
+        mAdapter = new ItemListAdapter(this, mListItems);
+        mListView.setAdapter(mAdapter);
+
+        // Listen for changes in ListItem Realm and notify the adapter of changes
+        mListItemChangeListener = new RealmChangeListener<RealmResults<ListItem>>() {
+            @Override
+            public void onChange(RealmResults<ListItem> element) {
+                mAdapter.notifyDataSetChanged();
+            }
+        };
+        mListItems.addChangeListener(mListItemChangeListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mListItems.removeChangeListener(mListItemChangeListener);
+        mRealm.close();
     }
 }

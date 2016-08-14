@@ -1,4 +1,4 @@
-package rs.htec.aleksa.htectest.api.retrofit;
+package rs.htec.aleksa.htectest.network.retrofit;
 
 import java.util.ArrayList;
 

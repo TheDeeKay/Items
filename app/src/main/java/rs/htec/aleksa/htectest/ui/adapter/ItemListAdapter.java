@@ -4,17 +4,16 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmBaseAdapter;
 import rs.htec.aleksa.htectest.R;
 import rs.htec.aleksa.htectest.pojo.ListItem;
 
@@ -22,28 +21,26 @@ import rs.htec.aleksa.htectest.pojo.ListItem;
  * Created by aleksa on 8/13/16.
  */
 
-public class ItemListAdapter extends BaseAdapter {
-
-    private List<ListItem> listItems;
+public class ItemListAdapter extends RealmBaseAdapter<ListItem> {
     private LayoutInflater inflater;
 
-    public ItemListAdapter(Context context, List<ListItem> listItems){
-        this.listItems = listItems;
+    public ItemListAdapter(Context context, OrderedRealmCollection<ListItem> data) {
+        super(context, data);
         inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        if (listItems != null) {
-            return listItems.size();
+        if (adapterData != null) {
+            return adapterData.size();
         }
         return 0;
     }
 
     @Override
-    public Object getItem(int position) {
-        if (listItems != null) {
-            return listItems.get(position);
+    public ListItem getItem(int position) {
+        if (adapterData != null) {
+            return adapterData.get(position);
         }
         return null;
     }
@@ -66,11 +63,11 @@ public class ItemListAdapter extends BaseAdapter {
         ViewHolder holder = (ViewHolder) convertView.getTag();
 
         // Properly set the contents of the view
-        holder.title.setText(listItems.get(position).getTitle());
-        holder.description.setText(listItems.get(position).getDescription());
+        holder.title.setText(adapterData.get(position).getTitle());
+        holder.description.setText(adapterData.get(position).getDescription());
         // Load image from URL, center crop it and cache it to the disk
         Glide.with(parent.getContext())
-                .load(listItems.get(position).getImageUrl())
+                .load(adapterData.get(position).getImageUrl())
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(holder.image);

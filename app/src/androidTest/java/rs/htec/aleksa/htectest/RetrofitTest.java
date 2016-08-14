@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
-import rs.htec.aleksa.htectest.api.API;
+import rs.htec.aleksa.htectest.network.API;
 import rs.htec.aleksa.htectest.pojo.ListItem;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;

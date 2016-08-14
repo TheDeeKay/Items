@@ -1,11 +1,11 @@
-package rs.htec.aleksa.htectest.api;
+package rs.htec.aleksa.htectest.network;
 
 import java.util.ArrayList;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rs.htec.aleksa.htectest.api.retrofit.ItemApiInterface;
+import rs.htec.aleksa.htectest.network.retrofit.ItemApiInterface;
 import rs.htec.aleksa.htectest.pojo.ListItem;
 import rx.Observable;
 
