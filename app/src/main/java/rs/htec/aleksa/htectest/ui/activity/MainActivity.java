@@ -1,15 +1,18 @@
 package rs.htec.aleksa.htectest.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import rs.htec.aleksa.htectest.R;
+import rs.htec.aleksa.htectest.constant.Constants;
 import rs.htec.aleksa.htectest.data.FetchData;
 import rs.htec.aleksa.htectest.pojo.ListItem;
 import rs.htec.aleksa.htectest.ui.adapter.ItemListAdapter;
@@ -20,6 +23,22 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_list_view)
     ListView mListView;
+
+    /**
+     * Launches the detail activity for the selected item
+     * The launching intent contains title, description and image url for the given item
+     */
+    @OnItemClick(R.id.main_list_view)
+    void launchDetails(int position) {
+        ListItem item = mAdapter.getItem(position);
+
+        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+        intent.putExtra(Constants.ITEM_TITLE_KEY, item.getTitle());
+        intent.putExtra(Constants.ITEM_DESCRIPTION_KEY, item.getDescription());
+        intent.putExtra(Constants.ITEM_IMAGE_URL_KEY, item.getImageUrl());
+
+        startActivity(intent);
+    }
 
     private ItemListAdapter mAdapter;
 
@@ -44,12 +63,7 @@ public class MainActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
 
         // Listen for changes in ListItem Realm and notify the adapter of changes
-        mListItemChangeListener = new RealmChangeListener<RealmResults<ListItem>>() {
-            @Override
-            public void onChange(RealmResults<ListItem> element) {
-                mAdapter.notifyDataSetChanged();
-            }
-        };
+        mListItemChangeListener = element -> mAdapter.notifyDataSetChanged();
         mListItems.addChangeListener(mListItemChangeListener);
     }
 

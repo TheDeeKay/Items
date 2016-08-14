@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <rs.htec.aleksa.htectest.ui.widget.SquareImageView
+        android:id="@+id/detail_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/main_item_image_margin"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        tools:ignore="contentDescription"
+        android:src="@drawable/placeholder"/>
+
+    <TextView
+        android:id="@+id/detail_title"
+        style="@style/TitleTextView"
+        android:text="Item title"/>
+
+    <TextView
+        android:id="@+id/detail_description"
+        style="@style/DescriptionTextView" />
+
+</LinearLayout>
