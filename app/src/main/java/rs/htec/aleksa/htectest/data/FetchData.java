@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -16,6 +17,7 @@ import rs.htec.aleksa.htectest.util.Utilities;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -27,6 +29,10 @@ import rx.schedulers.Schedulers;
 public class FetchData {
 
     private static final String TAG = "FetchData";
+
+    // Those determine the fetch retry interval in seconds and the maximum number of retries
+    private static final int RETRY_INTERVAL = 5;
+    private static final int MAX_RETRIES = 10;
 
     // Used to avoid overlapping error Toasts
     private static Toast sToast = null;
@@ -48,18 +54,29 @@ public class FetchData {
         API.getAllItems()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
+                .retryWhen(getRetryWhen(context))
                 .subscribe(
                         listItems -> storeData(listItems, context),
-                        e -> handleError(e, context),
+                        e -> {
+                            handleError(e);
+                            callOnComplete(onComplete);
+                        },
                         () -> {
                             Log.d(TAG, "Successfuly finished fetching data");
-                            // If there is onComplete, execute it on mainThread
-                            if (onComplete != null) {
-                                Observable.just(null)
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(o -> onComplete.call());
-                            }
+                            callOnComplete(onComplete);
                         });
+    }
+
+    /**
+     * A helper method that calls an Action0 if it's not null and executes it on main thread
+     * @param onComplete the action to execute, can be null
+     */
+    private static void callOnComplete(Action0 onComplete){
+        if (onComplete != null) {
+            Observable.just(null)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(o -> onComplete.call());
+        }
     }
 
     /**
@@ -82,16 +99,8 @@ public class FetchData {
     /**
      * Handles an error received during the fetch
      * @param e The throwable received as an error
-     * @param context The context in which the error Toast can be shown
      */
-    private static void handleError(Throwable e, Context context){
-
-        // If there's no network, inform the user
-        Observable.just(Utilities.hasNetworkConnection(context))
-                .filter(aBoolean -> !aBoolean) // Filter to emit only if the method returns false
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aBoolean -> toastNoNetwork(context));
+    private static void handleError(Throwable e){
 
         Log.d(TAG, "An error occured during fetch", e);
     }
@@ -110,5 +119,30 @@ public class FetchData {
             sToast = Toast.makeText(context, message, Toast.LENGTH_LONG);
             sToast.show();
         }
+    }
+
+    private static Func1<? super Observable<? extends Throwable>, ? extends Observable<?>> getRetryWhen(Context context){
+
+        return observable -> {
+
+            // Each time there's an error, check if there's network and the first time this happens
+            // display the toast error on the main thread
+            observable
+                    .filter(o -> !Utilities.hasNetworkConnection(context))
+                    .take(1)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(o -> toastNoNetwork(context));
+
+            return observable
+                    // If there's no network, retry after RETRY_INTERVAL seconds. Otherwise, go to onError
+                    .flatMap(o -> {
+                        if (!Utilities.hasNetworkConnection(context)){
+                            return Observable.timer(RETRY_INTERVAL, TimeUnit.SECONDS);
+                        }
+                        return Observable.error(o);
+                    })
+                    // Retry for a maximum of MAX_RETRIES times
+                    .zipWith(Observable.range(1, MAX_RETRIES), (aLong, integer) -> integer);
+        };
     }
 }
