@@ -2,13 +2,15 @@ package rs.htec.aleksa.htectest.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+
 /**
  * Created by aleksa on 8/13/16.
  *
  * A POJO representing our item from the JSON response
  */
 
-public class ListItem {
+public class ListItem extends RealmObject{
 
     @SerializedName("image")
     private String imageUrl;
