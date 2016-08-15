@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">HTEC Test</string>
     <string name="no_network_error">Failed to load data. Please check your network connection</string>
+    <string name="image_transition">imageTransition</string>
+    <string name="title_transition">titleTransition</string>
+    <string name="description_transition">descriptionTransition</string>
 </resources>

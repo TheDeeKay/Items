@@ -7,6 +7,7 @@
 
     <rs.htec.aleksa.htectest.ui.widget.SquareImageView
         android:id="@+id/main_item_image"
+        android:transitionName="@string/image_transition"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/main_item_margin"
@@ -24,12 +25,13 @@
 
         <TextView
             android:id="@+id/main_item_title"
+            android:transitionName="@string/title_transition"
             style="@style/TitleTextView"
-            android:text="Item title"
             android:layout_marginTop="@dimen/main_item_margin"/>
 
         <TextView
             android:id="@+id/main_item_description"
+            android:transitionName="@string/description_transition"
             android:layout_below="@id/main_item_title"
             android:layout_height="match_parent"
             style="@style/DescriptionTextView"

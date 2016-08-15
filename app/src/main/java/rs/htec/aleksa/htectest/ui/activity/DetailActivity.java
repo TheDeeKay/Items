@@ -3,6 +3,7 @@ package rs.htec.aleksa.htectest.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,6 +45,17 @@ public class DetailActivity extends AppCompatActivity {
         initializeUi();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            // Finish with the same exit transition when home is pressed
+            case android.R.id.home:
+                supportFinishAfterTransition();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Initializes the UI using data passed with the intent
      */
@@ -56,7 +68,7 @@ public class DetailActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(intent.getStringExtra(Constants.ITEM_IMAGE_URL_KEY))
                 .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mImage);
     }
 }

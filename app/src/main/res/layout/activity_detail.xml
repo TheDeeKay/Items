@@ -7,6 +7,7 @@
 
     <rs.htec.aleksa.htectest.ui.widget.SquareImageView
         android:id="@+id/detail_image"
+        android:transitionName="@string/image_transition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/main_item_margin"
@@ -17,11 +18,13 @@
 
     <TextView
         android:id="@+id/detail_title"
+        android:transitionName="@string/title_transition"
         style="@style/TitleTextView"
         android:text="Item title"/>
 
     <TextView
         android:id="@+id/detail_description"
-        style="@style/DescriptionTextView" />
+        style="@style/DescriptionTextView"
+        android:transitionName="@string/description_transition"/>
 
 </LinearLayout>

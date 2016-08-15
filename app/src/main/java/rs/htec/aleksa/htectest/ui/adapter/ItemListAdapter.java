@@ -69,7 +69,7 @@ public class ItemListAdapter extends RealmBaseAdapter<ListItem> {
         Glide.with(parent.getContext())
                 .load(adapterData.get(position).getImageUrl())
                 .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.image);
 
         return convertView;
