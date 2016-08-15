@@ -37,6 +37,9 @@ public class FetchData {
     // Used to avoid overlapping error Toasts
     private static Toast sToast = null;
 
+    // Keeps track of whether or not we're currently fetching
+    private static boolean isFetchActive = false;
+
     /**
      * A wrapper for the fetch with no onComplete call
      */
@@ -46,25 +49,31 @@ public class FetchData {
 
     /**
      * Fetches the network data on an IO thread and stores it into Realm on an IO thread
+     * Will not run more than once in parallel
      * @param context The context used to open a Realm instance. Best be an applicationContext
      * @param onComplete The action to be performed when this fetch finishes
      */
     public static void fetchData(Context context, Action0 onComplete){
 
-        API.getAllItems()
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .retryWhen(getRetryWhen(context))
-                .subscribe(
-                        listItems -> storeData(listItems, context),
-                        e -> {
-                            handleError(e);
-                            callOnComplete(onComplete);
-                        },
-                        () -> {
-                            Log.d(TAG, "Successfuly finished fetching data");
-                            callOnComplete(onComplete);
-                        });
+        if (!isFetchActive){
+            isFetchActive = true;
+            API.getAllItems()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .retryWhen(getRetryWhen(context))
+                    .subscribe(
+                            listItems -> storeData(listItems, context),
+                            e -> {
+                                handleError(e);
+                                callOnComplete(onComplete);
+                                isFetchActive = false;
+                            },
+                            () -> {
+                                Log.d(TAG, "Successfuly finished fetching data");
+                                callOnComplete(onComplete);
+                                isFetchActive = false;
+                            });
+        }
     }
 
     /**
