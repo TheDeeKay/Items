@@ -3,6 +3,7 @@ package rs.htec.aleksa.htectest.pojo;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by aleksa on 8/13/16.
@@ -15,6 +16,7 @@ public class ListItem extends RealmObject{
     @SerializedName("image")
     private String imageUrl;
     @SerializedName("title")
+    @PrimaryKey
     private String title;
     @SerializedName("description")
     private String description;
