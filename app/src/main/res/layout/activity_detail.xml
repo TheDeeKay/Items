@@ -26,8 +26,7 @@
             android:transitionName="@string/title_transition"
             style="@style/TitleTextView"
             android:gravity="center"
-            android:textSize="18sp"
-            android:text="Item title"/>
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/detail_description"
