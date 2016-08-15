@@ -22,6 +22,8 @@ import rs.htec.aleksa.htectest.data.FetchData;
 import rs.htec.aleksa.htectest.pojo.ListItem;
 import rs.htec.aleksa.htectest.ui.adapter.ItemListAdapter;
 import rs.htec.aleksa.htectest.ui.widget.SquareImageView;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private Realm mRealm;
     private RealmChangeListener<RealmResults<ListItem>> mListItemChangeListener;
     private RealmResults<ListItem> mListItems;
+
+    // Used to cancel any subscriptions that may crash the app after onDestroy
+    private CompositeSubscription mCompSub;
 
     /**
      * Launches the detail activity for the selected item
@@ -73,8 +78,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        mCompSub = new CompositeSubscription();
+
         mRealm = Realm.getDefaultInstance();
 
+        // No need to keep this subscription, since it doesn't reference this Activity explicitly
         FetchData.fetchData(getApplicationContext());
 
         // Get all the ListItems, create an adapter for them and set them to the listview
@@ -88,15 +96,22 @@ public class MainActivity extends AppCompatActivity {
 
         // Attach a listener for the pulldown refresh (to just fetch data)
         swipeContainer.setOnRefreshListener(
-                () -> FetchData.fetchData(
-                        getApplicationContext(),
-                        () -> swipeContainer.setRefreshing(false))
+                () -> {
+                    Subscription sub = FetchData.fetchData(
+                            getApplicationContext(),
+                            () -> swipeContainer.setRefreshing(false));
+                    // If sub is null, that means we are not fetching and there's nothing to refresh
+                    if (sub == null) swipeContainer.setRefreshing(false);
+                    else mCompSub.add(sub);
+                }
         );
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        mCompSub.unsubscribe();
 
         // Remove Realm listeners and close the Realm
         mListItems.removeChangeListener(mListItemChangeListener);

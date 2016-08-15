@@ -15,6 +15,7 @@ import rs.htec.aleksa.htectest.network.API;
 import rs.htec.aleksa.htectest.pojo.ListItem;
 import rs.htec.aleksa.htectest.util.Utilities;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Func1;
@@ -42,9 +43,11 @@ public class FetchData {
 
     /**
      * A wrapper for the fetch with no onComplete call
+     *
+     * @return The subscription for the given fetch, or null if fetch isn't triggered
      */
-    public static void fetchData(Context context){
-        fetchData(context, null);
+    public static Subscription fetchData(Context context){
+        return fetchData(context, null);
     }
 
     /**
@@ -52,12 +55,14 @@ public class FetchData {
      * Will not run more than once in parallel
      * @param context The context used to open a Realm instance. Best be an applicationContext
      * @param onComplete The action to be performed when this fetch finishes
+     *
+     * @return The subscription for the given fetch, or null if fetch isn't triggered
      */
-    public static void fetchData(Context context, Action0 onComplete){
+    public static Subscription fetchData(Context context, Action0 onComplete){
 
         if (!isFetchActive){
             isFetchActive = true;
-            API.getAllItems()
+            return API.getAllItems()
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .retryWhen(getRetryWhen(context))
@@ -74,6 +79,9 @@ public class FetchData {
                                 isFetchActive = false;
                             });
         }
+
+        // If fetch wasn't triggered
+        return null;
     }
 
     /**
