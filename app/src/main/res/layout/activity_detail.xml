@@ -10,16 +10,16 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/list_vertical_margin">
 
-        <rs.htec.aleksa.htectest.ui.widget.SquareImageView
+        <ImageView
             android:id="@+id/detail_image"
             android:transitionName="@string/image_transition"
-            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/main_item_margin"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:adjustViewBounds="true"
-            tools:ignore="contentDescription"
-            android:src="@drawable/placeholder"/>
+            tools:ignore="contentDescription" />
 
         <TextView
             android:id="@+id/detail_title"

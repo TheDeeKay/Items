@@ -19,6 +19,8 @@ import rs.htec.aleksa.htectest.constant.Constants;
  * Created by aleksa on 8/14/16.
  *
  * An activity that displays a single ListItem
+ *
+ * TODO: implement master/detail if there's time
  */
 
 public class DetailActivity extends AppCompatActivity {
@@ -67,7 +69,7 @@ public class DetailActivity extends AppCompatActivity {
         mDescription.setText(intent.getStringExtra(Constants.ITEM_DESCRIPTION_KEY));
         Glide.with(this)
                 .load(intent.getStringExtra(Constants.ITEM_IMAGE_URL_KEY))
-                .centerCrop()
+                .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mImage);
     }
