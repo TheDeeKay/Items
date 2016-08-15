@@ -11,7 +11,7 @@
         android:id="@+id/main_list_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:divider="@null"
+        android:divider="@drawable/mail_list_divider"
         android:paddingBottom="@dimen/list_vertical_margin"/>
 
 </android.support.v4.widget.SwipeRefreshLayout>
